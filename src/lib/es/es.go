@@ -476,16 +476,16 @@ func SearchApiVersions(mapping string, name string, from int, size int) ([]Metad
 		body = fmt.Sprintf(`
 		{
 			"query": {
-				"match": {
+        		"match_phrase": {
 					"name": "%s"
-				}
-			},
+        		}
+    		},
 			"collapse": {
 				"field": "name.subField"
 			},
 			"sort": [
 				{
-					"time": "desc"
+					"time":"desc"
 				},
 				{
 					"version": "desc"
@@ -527,10 +527,8 @@ func SearchApiVersions(mapping string, name string, from int, size int) ([]Metad
 	}
 
 	result, _ := ioutil.ReadAll(r.Body)
-
 	var sr searchResult
 	json.Unmarshal(result, &sr)
-
 	metas := make([]Metadata, 0)
 	for _, hit := range sr.Hits.Hits {
 		metas = append(metas, hit.Source)

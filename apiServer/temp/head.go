@@ -10,7 +10,7 @@ import (
 
 func head(w http.ResponseWriter, r *http.Request) {
 	// 用token恢复出stream
-	token := strings.Split(r.URL.EscapedPath(), "/")[2]
+	token := strings.Split(r.URL.EscapedPath(), "/")[3]
 	stream, e := rs.NewRSResumablePutStreamFromToken(token)
 	if e != nil {
 		log.Println(e)

@@ -14,15 +14,15 @@ import (
 
 func put(w http.ResponseWriter, r *http.Request) {
 	// 获得桶名
-	bucket := r.Header.Get("bucket")
+	bucket := strings.Split(r.URL.EscapedPath(), "/")[2]
 	if bucket == "" {
-		myLog.Error.Println("请求头中缺少桶名")
+		myLog.Error.Println("路径参数中缺少桶名")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// 从url中获取token
-	token := strings.Split(r.URL.EscapedPath(), "/")[2]
+	token := strings.Split(r.URL.EscapedPath(), "/")[3]
 	// 根据token 创建RSResumablePutStream结构体指针stream
 	stream, e := rs.NewRSResumablePutStreamFromToken(token)
 	if e != nil {

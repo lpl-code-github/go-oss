@@ -14,21 +14,22 @@ import (
 )
 
 func post(w http.ResponseWriter, r *http.Request) {
+	// 获得桶名
+	bucket := strings.Split(r.URL.EscapedPath(), "/")[2]
+	if bucket == "" {
+		myLog.Error.Println("路径参数中缺少桶名")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	// 获得对象的名字
-	name := strings.Split(r.URL.EscapedPath(), "/")[2]
+	name := strings.Split(r.URL.EscapedPath(), "/")[3]
 	//unescape, _ := url.QueryUnescape(name)
 	// 从请求头获得对象size
 	size, e := strconv.ParseInt(r.Header.Get("size"), 0, 64)
 	if e != nil {
 		myLog.Error.Println(e)
 		w.WriteHeader(http.StatusForbidden)
-		return
-	}
-	// 获得桶名
-	bucket := r.Header.Get("bucket")
-	if bucket == "" {
-		myLog.Error.Println("请求头中缺少桶名")
-		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -67,7 +68,7 @@ func post(w http.ResponseWriter, r *http.Request) {
 	}
 	myLog.Info.Println("获取分片上传token")
 	// 调用ToToken方法生成一个token字符串 放入相应头部
-	w.Header().Set("location", "/temp/"+url.PathEscape(stream.ToToken()))
+	w.Header().Set("location", "/temp/"+bucket+"/"+url.PathEscape(stream.ToToken()))
 	// 返回201 已创建
 	w.WriteHeader(http.StatusCreated)
 }

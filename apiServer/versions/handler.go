@@ -20,9 +20,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 获得桶名
-	bucket := r.Header.Get("bucket")
+	bucket := strings.Split(r.URL.EscapedPath(), "/")[2]
 	if bucket == "" {
-		myLog.Error.Println("请求头中缺少桶名")
+		myLog.Error.Println("路径参数中缺少桶名")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -32,7 +32,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	size := 1000
 	result := make([]es.Metadata, 0)
 	// 获取对象名称
-	name := strings.Split(r.URL.EscapedPath(), "/")[2]
+	name := strings.Split(r.URL.EscapedPath(), "/")[3]
 	//unescape, _ := url.QueryUnescape(name)
 	//无限循环
 	for {

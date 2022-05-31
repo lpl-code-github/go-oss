@@ -2,8 +2,8 @@ package temp
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"oss/src/lib/myLog"
 	"oss/src/lib/rs"
 	"strings"
 )
@@ -13,7 +13,7 @@ func head(w http.ResponseWriter, r *http.Request) {
 	token := strings.Split(r.URL.EscapedPath(), "/")[3]
 	stream, e := rs.NewRSResumablePutStreamFromToken(token)
 	if e != nil {
-		log.Println(e)
+		myLog.Error.Println(e)
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
